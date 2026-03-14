@@ -13,6 +13,8 @@ def get_reranked_chunk(session: Session, ask_str: str, ask_em: list[float], keyw
         result = session.exec(stmt).first()
 
         temp = f"""
+            [책 아이디] {result.id}
+            [책 아이디] {result.id}
             [제목] {result.titles}
             [작가] {result.authors}
             [출판사] {result.publisher}

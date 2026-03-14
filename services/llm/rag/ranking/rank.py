@@ -7,7 +7,7 @@ from services.llm.rag.sim.fts_trgm import search_class
 class Ranking:
 
     def __init__(self):
-        self.search = search_class()
+        self.search = search_class
 
 
     def _set_ids(self, session: Session, ask_em: list[float], keywords: str, limit: int):

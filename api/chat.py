@@ -35,8 +35,15 @@ async def chatbot(session: SessionDep, chat: Chat):
         raise HTTPException(status_code=404, detail="no conversation")
 
     answer = bookshelf_llm_service.bookshelf_model(session, chat.con_id, chat.question, 15, 6)
-
     session.add(Message(conversation_id=chat.con_id, role=Role.user ,content=chat.question))
-    session.add(Message(conversation_id=chat.con_id, role=Role.assistant, content=answer))
+    try:
+        # if isinstance(answer, dict):
+        #     content = answer.get("answer", "")
+        # else:
+        #     content = getattr(answer, "answer", str(answer))
+        session.add(Message(conversation_id=chat.con_id, role=Role.assistant, content=answer.get("answer", "")))
+    except AttributeError as e:
+        print(e)
+        session.add(Message(conversation_id=chat.con_id, role=Role.assistant, content=answer))
     session.commit()
     return answer
