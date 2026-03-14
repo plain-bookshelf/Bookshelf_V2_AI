@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from db.session import create_tables
 from api.chat import chat_router
 from api.recommend import recommend_router
+from api.send_metadata import send_data_router
 
 from db.models import UserMake
 from db.schemas import User
@@ -36,3 +37,4 @@ async def create_user(session: SessionDep, user_in: UserMake):
 
 app.include_router(chat_router)
 app.include_router(recommend_router)
+app.include_router(send_data_router)

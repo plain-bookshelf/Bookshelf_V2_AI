@@ -18,3 +18,6 @@ class Messages(SQLModel):
 
 class UserId(SQLModel):
     id: int
+
+class BookIds(SQLModel):
+    ids: list[int]
