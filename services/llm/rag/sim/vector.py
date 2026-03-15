@@ -1,37 +1,50 @@
-from db.session import engine
 from db.schemas import BookVector, Books
-from FlagEmbedding import BGEM3FlagModel
-from sqlmodel import select, Session, asc, cast, Float, func
+from sqlmodel import select, Session, cast, Float, func
 
-# def embedding_sim(session: Session, ask_em: list[float], limit: int):
-#     distances = cast(BookVector.embedding.op("<=>")(ask_em), Float).label("distance")
-#     result = (
-#         select(
-#             Books.titles, BookVector.Books_id, distances)
-#             .join(BookVector, BookVector.Books_id == Books.id)
-#             .order_by(asc(distances)).limit(limit)
-#     )
-#     return session.exec(result).all()
 
-# 중복 제거 (토큰 절약 용)
 def embedding_sim(session: Session, ask_em: list[float], limit: int):
     distance_expr = cast(BookVector.embedding.op("<=>")(ask_em), Float)
 
-    result = (
+    book_data = (
         select(
-            func.min(Books.titles).label("titles"),
-            func.min(BookVector.Books_id).label("Books_id"),
-            distance_expr.label("distance")
+            Books.titles.label("titles"),
+            Books.id.label("book_ids"),
+            distance_expr.label("distances")
         )
         .join(BookVector, BookVector.Books_id == Books.id)
-        .group_by(distance_expr)
-        .order_by(asc("distance"))
+        .subquery()
+    )
+
+    ranked = (
+        select(
+            book_data.c.titles,
+            book_data.c.book_ids,
+            book_data.c.distances,
+            func.row_number().over(
+                partition_by=book_data.c.titles,
+                order_by=(book_data.c.distances, book_data.c.book_ids)
+            ).label("rank")
+        )
+        .subquery()
+    )
+
+    result = (
+        select(
+            ranked.c.titles,
+            ranked.c.book_ids,
+            ranked.c.distances
+        )
+        .where(ranked.c.rank == 1)
+        .order_by(ranked.c.distances)
         .limit(limit)
     )
 
     return session.exec(result).all()
 
-# text = """sf소설 추천해줘"""
+
+# from db.session import engine
+# from FlagEmbedding import BGEM3FlagModel
+# text = """c언어"""
 # m3 = BGEM3FlagModel("BAAI/bge-m3")
 # out = m3.encode(text, batch_size=12, max_length=4096)
 # dense = out['dense_vecs']

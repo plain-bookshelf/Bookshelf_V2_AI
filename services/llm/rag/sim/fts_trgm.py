@@ -1,4 +1,3 @@
-from db.session import engine
 from sqlmodel import Session, select, case, Float, cast, func, desc, or_
 from db.schemas import Books
 
@@ -57,7 +56,7 @@ class Search:
 search_class = Search()
 
 
-
+# from db.session import engine
 # with Session(engine) as session:
 #     rows = fts_trgm_search(session, "동물", limit=50)
 #     i = 0

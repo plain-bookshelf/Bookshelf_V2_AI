@@ -1,4 +1,3 @@
-from db.session import engine
 from db.schemas import BookVector, Books
 from sqlmodel import select, Session, cast, Float, func, true
 
@@ -8,7 +7,7 @@ def book_sim(session: Session, book_ids: list[int], limit: int):
     targets = (
         select(BookVector.embedding.label("t_emb"))
         .where(BookVector.Books_id.in_(book_ids))
-        .subquery() # 임시 테이블
+        .subquery()
     )
 
     dist = cast(BookVector.embedding.op("<=>")(targets.c.t_emb), Float)
@@ -26,7 +25,6 @@ def book_sim(session: Session, book_ids: list[int], limit: int):
         .subquery()
     )
 
-    # 2) "타이틀" 기준: 가장 가까운 1권만 남기기
     ranked = (
         select(
             per_copy.c.title,
@@ -40,18 +38,20 @@ def book_sim(session: Session, book_ids: list[int], limit: int):
         .subquery()
     )
 
-    q = (
+    result = (
         select(ranked.c.title, ranked.c.book_id, ranked.c.distance)
         .where(ranked.c.rn == 1)
+        .where(ranked.c.distance > 0.09)
         .order_by(ranked.c.distance)
         .limit(limit)
     )
 
-    return session.exec(q).all()
+    return session.exec(result).all()
 
 
+# from db.session import engine
 # with Session(engine) as session:
-#     rows = book_sim(session, [8813, 8578], limit=15)
+#     rows = book_sim(session, [4503], limit=15)
 #     print(rows)
 #     for t, n, d in rows:
 #         print(n,d,t)
