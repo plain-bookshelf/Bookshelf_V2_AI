@@ -23,6 +23,8 @@ class BookRecommendationService:
 
     def book_sim(self, session: Session, member_id: int, limit: int):
         book_ids = self._get_user_books_id(session, member_id)
+        if not book_ids:
+            return []
 
         targets = (
             select(BookSimilarity.vector_similarity.label("t_emb"))
@@ -67,3 +69,6 @@ class BookRecommendationService:
         )
 
         return session.exec(result).all()
+
+
+book_recommendation_service = BookRecommendationService()

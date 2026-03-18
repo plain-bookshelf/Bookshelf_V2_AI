@@ -1,16 +1,17 @@
 from sqlmodel import select, Session
 from openai import OpenAI
 from core.config import settings
-from db.schemas import Message
+from app.domain.chat.models import ChatAiMessage
+
 
 client = OpenAI(
     base_url="https://api.groq.com/openai/v1",
     api_key=settings.SMALL_API_KEY
 )
 
-def memory_summary(session: Session, con_id: int):
+def memory_summary(session: Session, session_id: int):
     summerize = ""
-    stmt = select(Message).where(Message.conversation_id == con_id)
+    stmt = select(ChatAiMessage).where(ChatAiMessage.session_id == session_id)
     result = session.exec(stmt).all()
     if len(result) > 12:
         for message in result[12:]:

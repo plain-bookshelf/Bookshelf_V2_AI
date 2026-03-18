@@ -1,9 +1,10 @@
 from sqlmodel import select, Session
-from db.schemas import Message
+from app.domain.chat.models import ChatAiMessage
 
-def get_messages(session: Session, con_id):
+
+def get_messages(session: Session, session_id):
     recent_chat = ""
-    stmt = select(Message).where(Message.conversation_id == con_id)
+    stmt = select(ChatAiMessage).where(ChatAiMessage.session_id == session_id)
     result = session.exec(stmt).all()
     if result:
         for message in result[-12:]:
