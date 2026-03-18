@@ -1,5 +1,6 @@
 from sqlmodel import Session, select, case, Float, cast, func, desc, or_
-from db.schemas import Books
+from app.common.models.books import Book
+
 
 class Search:
 
@@ -7,9 +8,9 @@ class Search:
     def fts_search(keywords: str):
         tsq = func.websearch_to_tsquery("simple", keywords)
 
-        fts_rank_raw = func.ts_rank_cd(Books.search_tsv, tsq)
+        fts_rank_raw = func.ts_rank_cd(Book.similarity_token, tsq)
         fts_score = case(
-            (Books.search_tsv.op("@@")(tsq), fts_rank_raw),
+            (Book.similarity_token.op("@@")(tsq), fts_rank_raw),
             else_=0.0
         ).label("fts_score")
         return fts_score
@@ -17,11 +18,11 @@ class Search:
 
     @staticmethod
     def trgm_search(keywords: str):
-        title_ns = func.replace(Books.titles, " ", "")
+        title_ns = func.replace(Book.title, " ", "")
         q_ns = func.replace(keywords, " ", "")
 
         trgm_raw = func.greatest(
-            func.similarity(Books.titles, keywords),
+            func.similarity(Book.title, keywords),
             func.similarity(title_ns, q_ns),
         )
         trgm_score = cast(trgm_raw, Float).label("trgm_score")
@@ -39,12 +40,12 @@ class Search:
         score = fts_score + trgm_score
 
         stmt = (
-            select(Books, score)
+            select(Book, score)
             .where(
                 or_(
-                    Books.search_tsv.op("@@")(tsq),
+                    Book.search_tsv.op("@@")(tsq),
                     trgm_score >= 0,
-                    Books.titles.ilike(f"%{q}%")
+                    Book.title.ilike(f"%{q}%")
                 )
             )
             .order_by(desc(score))

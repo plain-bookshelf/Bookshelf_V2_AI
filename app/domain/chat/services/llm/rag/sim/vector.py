@@ -1,17 +1,17 @@
-from db.schemas import BookVector, Books
+from app.common.models.books import BookSimilarity, Book
 from sqlmodel import select, Session, cast, Float, func
 
 
 def embedding_sim(session: Session, ask_em: list[float], limit: int):
-    distance_expr = cast(BookVector.embedding.op("<=>")(ask_em), Float)
+    distance_expr = cast(BookSimilarity.vector_similarity.op("<=>")(ask_em), Float)
 
     book_data = (
         select(
-            Books.titles.label("titles"),
-            Books.id.label("book_ids"),
+            Book.title.label("titles"),
+            Book.id.label("book_ids"),
             distance_expr.label("distances")
         )
-        .join(BookVector, BookVector.Books_id == Books.id)
+        .join(BookSimilarity, BookSimilarity.book_id == Book.id)
         .subquery()
     )
 

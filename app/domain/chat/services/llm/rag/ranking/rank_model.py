@@ -1,6 +1,6 @@
-from core.config import settings
+from app.config import settings
 from openai import OpenAI
-from services.llm.rag.ranking.rank import ranking_class
+from app.domain.chat.services.llm.rag.ranking.rank import ranking_class
 from sqlmodel import Session
 import json
 

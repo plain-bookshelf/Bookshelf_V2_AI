@@ -1,12 +1,12 @@
-from core.config import settings
-from services.llm.rag.ranking.rerank import get_reranked_chunk
-from services.llm.rag.metadata.keywords import keyword_maker
-from services.llm.rag.metadata.q_embedding import query_embedding
-from services.llm.rag.metadata.set_prompt import book_prompt
+from app.config import settings
+from app.domain.chat.services.llm.rag.ranking.rerank import get_reranked_chunk
+from app.domain.chat.services.llm.rag.metadata.keywords import keyword_maker
+from app.domain.chat.services.llm.rag.metadata.q_embedding import query_embedding
+from app.domain.chat.services.llm.rag.metadata.set_prompt import book_prompt
+import google.generativeai as genai
 from sqlmodel import Session
 import json
 import re
-import google.generativeai as genai
 
 genai.configure(api_key=settings.BIG_API_KEY)
 

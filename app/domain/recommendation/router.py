@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from db.session import SessionDep
+from app.common.dependencies import SessionDep
 from app.domain.recommendation.services.book_recommendation import book_recommendation_service
 
 

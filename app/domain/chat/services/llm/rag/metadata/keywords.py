@@ -1,4 +1,4 @@
-from core.config import settings
+from app.config import settings
 from openai import OpenAI
 
 client = OpenAI(

@@ -1,6 +1,6 @@
 from sqlmodel import select, Session
 from openai import OpenAI
-from core.config import settings
+from app.config import settings
 from app.domain.chat.models import ChatAiMessage
 
 

@@ -1,7 +1,7 @@
-from db.schemas import Books, BookVector, BookChunk
 from sqlmodel import Session, cast, Float, select, asc, desc, func, or_
-from services.llm.rag.sim.vector import embedding_sim
-from services.llm.rag.sim.fts_trgm import search_class
+from app.domain.chat.services.llm.rag.sim.vector import embedding_sim
+from app.domain.chat.services.llm.rag.sim.fts_trgm import search_class
+from app.common.models.books import Book, BookChunk, BookSimilarity
 
 
 class Ranking:
@@ -22,11 +22,11 @@ class Ranking:
 
     @staticmethod
     def _vector_top_k(session: Session, ask_em: list[float], top_ids: list):
-        distances = cast(BookVector.embedding.op("<=>")(ask_em), Float).label("distance")
+        distances = cast(BookSimilarity.vector_similarity.op("<=>")(ask_em), Float).label("distance")
         result = (
             select(
-                BookVector.Books_id)  # distances
-            .where(BookVector.Books_id.in_(top_ids))
+                BookSimilarity.book_id)  # distances
+            .where(BookSimilarity.book_id.in_(top_ids))
             .order_by(asc(distances)).limit(len(top_ids))
         )
         vector_top = session.exec(result).all()
@@ -40,15 +40,15 @@ class Ranking:
         score = fts_score + trgm_score
 
         stmt = (
-            select(Books.id)  # score
+            select(Book.id)  # score
             .where(
                 or_(
-                    Books.search_tsv.op("@@")(tsq),
+                    Book.search_tsv.op("@@")(tsq),
                     trgm_score >= 0,
-                    Books.titles.ilike(f"%{keywords}%")
+                    Book.titles.ilike(f"%{keywords}%")
                 )
             )
-            .where(Books.id.in_(top_ids))
+            .where(Book.id.in_(top_ids))
             .order_by(desc(score))
             .limit(len(top_ids))
         )
@@ -89,7 +89,7 @@ class Ranking:
     def get_ranked_chunk(self, session: Session, ask_em: list[float], keywords: str, limit: int):
         a = self._rank_top_k(session, ask_em=ask_em, keywords=keywords, limit=limit)
 
-        stmt = select(BookChunk.Books_id, BookChunk.chunk_text).where(BookChunk.Books_id.in_(a))
+        stmt = select(BookChunk.book_id, BookChunk.chunk).where(BookChunk.book_id.in_(a))
         result = session.exec(stmt).all()
 
         m = {bid: text for bid, text in result}

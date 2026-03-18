@@ -1,6 +1,6 @@
 from sqlmodel import Session
-from services.llm.memory.store import get_messages
-from services.llm.memory.summary import memory_summary
+from app.domain.chat.services.llm.memory.store import get_messages
+from app.domain.chat.services.llm.memory.summary import memory_summary
 
 
 def book_prompt(session: Session, user_q, chunk, con_id):
