@@ -4,8 +4,8 @@ class UserMake(SQLModel):
     username: str
 
 class Chat(SQLModel):
-    user_id: int
-    con_id: int
+    member_id: int
+    session_id: int
     question: str
 
 class Con(SQLModel):

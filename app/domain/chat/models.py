@@ -13,7 +13,7 @@ class MessageRole(str, Enum):
 # ──────────────────────────────────────
 # 챗봇 세션 (chat_ai_session)
 # ──────────────────────────────────────
-class ChatAiSession(SQLModel, table=True):
+class ChatAiSession(SQLModel):
     __tablename__ = "chat_ai_session"
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -29,7 +29,7 @@ class ChatAiSession(SQLModel, table=True):
 # ──────────────────────────────────────
 # 챗봇 메시지 (chat_ai_message)
 # ──────────────────────────────────────
-class ChatAiMessage(SQLModel, table=True):
+class ChatAiMessage(SQLModel):
     __tablename__ = "chat_ai_message"
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -46,7 +46,7 @@ class ChatAiMessage(SQLModel, table=True):
 # ──────────────────────────────────────
 # 챗봇 이미지 (chat_ai_image)
 # ──────────────────────────────────────
-class ChatAiImage(SQLModel, table=True):
+class ChatAiImage(SQLModel):
     __tablename__ = "chat_ai_image"
 
     id: Optional[int] = Field(default=None, primary_key=True)

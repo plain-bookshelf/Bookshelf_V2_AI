@@ -7,7 +7,7 @@ from sqlalchemy.dialects.postgresql import TSVECTOR
 # ──────────────────────────────────────
 # 장르 (genre)
 # ──────────────────────────────────────
-class Genre(SQLModel, table=True):
+class Genre(SQLModel):
     __tablename__ = "genre"
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -19,7 +19,7 @@ class Genre(SQLModel, table=True):
 # ──────────────────────────────────────
 # 책 장르 (book_genre) — 다대다 중간 테이블
 # ──────────────────────────────────────
-class BookGenre(SQLModel, table=True):
+class BookGenre(SQLModel):
     __tablename__ = "book_genre"
 
     book_id: int = Field(foreign_key="book.id", primary_key=True)
@@ -32,7 +32,7 @@ class BookGenre(SQLModel, table=True):
 # ──────────────────────────────────────
 # 책 (book)
 # ──────────────────────────────────────
-class Book(SQLModel, table=True):
+class Book(SQLModel):
     __tablename__ = "book"
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -57,7 +57,7 @@ class Book(SQLModel, table=True):
 # ──────────────────────────────────────
 # 책 유사도 (book_similarity)
 # ──────────────────────────────────────
-class BookSimilarity(SQLModel, table=True):
+class BookSimilarity(SQLModel):
     __tablename__ = "book_similarity"
 
     book_id: int = Field(primary_key=True, foreign_key="book.id")
@@ -73,7 +73,7 @@ class BookSimilarity(SQLModel, table=True):
 # ──────────────────────────────────────
 # 책 청크 (book_chunk)
 # ──────────────────────────────────────
-class BookChunk(SQLModel, table=True):
+class BookChunk(SQLModel):
     __tablename__ = "book_chunk"
 
     book_id: int = Field(primary_key=True, foreign_key="book.id")
@@ -87,7 +87,7 @@ class BookChunk(SQLModel, table=True):
 # ──────────────────────────────────────
 # 책 상세정보 (book_detail)
 # ──────────────────────────────────────
-class BookDetail(SQLModel, table=True):
+class BookDetail(SQLModel):
     __tablename__ = "book_detail"
 
     id: Optional[int] = Field(default=None, primary_key=True)
