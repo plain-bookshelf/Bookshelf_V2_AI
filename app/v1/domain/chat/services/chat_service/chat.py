@@ -5,7 +5,7 @@ from app.v1.domain.chat.services.chat_service.get_infos import get_member, get_s
 from app.v1.domain.chat.services.llm.generator import bookshelf_llm_service
 
 
-def process_chat(session: Session, chat: Chat) -> dict:
+def process_chat(session: Session, chat: Chat) -> (dict, int):
     member = get_member(session, chat.member_id)
     chat_session = get_session(session, chat.session_id, member.id)
 
@@ -13,8 +13,8 @@ def process_chat(session: Session, chat: Chat) -> dict:
         session, chat.member_id, chat.question, 15, 6
     )
 
-    _save_messages(session, chat, answer)
-    return answer
+    message_id = _save_messages(session, chat, answer)
+    return answer, message_id
 
 
 def _save_messages(session: Session, chat: Chat, answer: dict):
@@ -30,4 +30,7 @@ def _save_messages(session: Session, chat: Chat, answer: dict):
         content=answer.get("answer", "오류가 발생했습니다."),
     )
     session.add(assistant_msg)
+    session.flush()
     session.commit()
+
+    return assistant_msg.id

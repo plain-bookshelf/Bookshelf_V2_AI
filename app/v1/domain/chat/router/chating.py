@@ -7,5 +7,5 @@ chat_router = APIRouter()
 
 @chat_router.post("/chat")
 async def chatbot(session: SessionDep, chat: Chat):
-    answer = process_chat(session, chat)
-    return answer
+    answer, message_id = process_chat(session, chat)
+    return {"agent": answer, "message_id": message_id}

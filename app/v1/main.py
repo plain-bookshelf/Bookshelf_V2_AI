@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.v1.common.error.exception import BaseAppException
 from app.v1.domain.recommendation.router import recommend_router
 from app.v1.domain.chat.router.chating import chat_router
+from app.v1.domain.chat.router.get_img import img_router
 
 app = FastAPI()
 
@@ -24,3 +25,4 @@ async def app_exception_handler(request: Request, exc: BaseAppException):
 
 app.include_router(recommend_router)
 app.include_router(chat_router)
+app.include_router(img_router)

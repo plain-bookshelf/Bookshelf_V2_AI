@@ -19,5 +19,6 @@ class Messages(SQLModel):
 class UserId(SQLModel):
     id: int
 
-class BookIds(SQLModel):
+class ImgIds(SQLModel):
+    message_id: int
     ids: list[int]
