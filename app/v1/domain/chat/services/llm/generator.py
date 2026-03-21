@@ -1,12 +1,13 @@
+import re
+import json
+from sqlmodel import Session
+import google.generativeai as genai
 from app.v1.config import settings
+from app.v1.common.error.exception import LLMServiceException
 from app.v1.domain.chat.services.llm.rag.ranking.rerank import get_reranked_chunk
 from app.v1.domain.chat.services.llm.rag.metadata.keywords import keyword_maker
 from app.v1.domain.chat.services.llm.rag.metadata.q_embedding import query_embedding
 from app.v1.domain.chat.services.llm.rag.metadata.set_prompt import book_prompt
-import google.generativeai as genai
-from sqlmodel import Session
-import json
-import re
 
 genai.configure(api_key=settings.BIG_API_KEY)
 
@@ -58,10 +59,8 @@ class BookshelfLLMService:
         try:
             result = self._parse_llm_json(response.text)
             return result
-        except json.JSONDecodeError as e:
-            print("JSON 파싱 실패:", e)
-            print(response.text)
-            return response.text
+        except json.JSONDecodeError:
+            raise LLMServiceException()
 
 
 
