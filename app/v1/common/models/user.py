@@ -29,6 +29,8 @@ class Member(SQLModel):
     one_month_statistics: int = Field(default=0, nullable=False)
     overdue_term: datetime = Field(nullable=False)
     often_book_read_time: datetime = Field(nullable=False)
+    rental_count: int
+    reservation_count: int
     created_at: datetime = Field(default_factory=datetime.now, nullable=False)
     updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
 

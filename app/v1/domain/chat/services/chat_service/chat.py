@@ -1,6 +1,6 @@
 from sqlmodel import Session
 from app.v1.domain.chat.schemas import Chat
-from app.v1.domain.chat.models import ChatAiSession, ChatAiImage, ChatAiMessage, MessageRole
+from app.v1.domain.chat.models import ChatAiMessage, MessageRole
 from app.v1.domain.chat.services.chat_service.get_infos import get_member, get_session
 from app.v1.domain.chat.services.llm.generator import bookshelf_llm_service
 

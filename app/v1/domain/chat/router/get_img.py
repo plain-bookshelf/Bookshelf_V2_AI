@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from sqlmodel import select
 from app.v1.common.dependencies import SessionDep
-from app.v1.common.models.books import Book
+from app.v1.common.models.book_tables import Book
 from app.v1.domain.chat.models import ChatAiImage
 from app.v1.domain.chat.schemas import ImgIds
 
@@ -21,5 +21,7 @@ async def send_imgs(session: SessionDep, img_ids: ImgIds):
     session.commit()
 
     return {
-        "book_imgs": [book.book_image for book in result]
+        "book_imgs": [
+            book.book_image for book in result
+        ]
     }

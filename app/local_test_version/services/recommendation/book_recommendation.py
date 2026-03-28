@@ -49,9 +49,9 @@ def book_sim(session: Session, book_ids: list[int], limit: int):
     return session.exec(result).all()
 
 
-# from db.session import engine
-# with Session(engine) as session:
-#     rows = book_sim(session, [4503], limit=15)
-#     print(rows)
-#     for t, n, d in rows:
-#         print(n,d,t)
+from app.local_test_version.db.session import engine
+with Session(engine) as session:
+    rows = book_sim(session, [4503], limit=15)
+    print(rows)
+    for t, n, d in rows:
+        print(n,d,t)

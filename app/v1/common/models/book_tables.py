@@ -1,8 +1,21 @@
 from datetime import date, datetime
-from typing import Optional, List
+from typing import Optional
 from sqlmodel import Field, Relationship, SQLModel, Column
 from pgvector.sqlalchemy import Vector
 from sqlalchemy.dialects.postgresql import TSVECTOR
+
+
+# ──────────────────────────────────────
+# 소속 (affiliation)
+# ──────────────────────────────────────
+class Affiliation(SQLModel):
+    __tablename__ = "affiliation"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    affiliation_name: str = Field(max_length=100, nullable=False)
+
+    book_affiliations: list["BookAffiliation"] = Relationship(back_populates="affiliation")
+
 
 # ──────────────────────────────────────
 # 장르 (genre)
@@ -36,22 +49,35 @@ class Book(SQLModel):
     __tablename__ = "book"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    affiliation_id: int = Field(nullable=False, index=True)
     title: str = Field(max_length=100, nullable=False)
     author: str = Field(max_length=100, nullable=False)
     publication_date: Optional[str] = Field(default=None, max_length=20)
     introduction: str = Field(max_length=1000, nullable=False)
     book_image: str = Field(max_length=100, nullable=False)
     publisher: Optional[str] = Field(default=None, max_length=20)
+
+    genre_links: list[BookGenre] = Relationship(back_populates="book")
+    book_affiliations: list["BookAffiliation"] = Relationship(back_populates="book")
+
+
+# ──────────────────────────────────────
+# 책 소속 (book_affiliation)
+# ──────────────────────────────────────
+class BookAffiliation(SQLModel):
+    __tablename__ = "book_affiliation"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    book_id: int = Field(foreign_key="book.id", nullable=False, index=True)
+    affiliation_id: int = Field(foreign_key="affiliation.id", nullable=False, index=True)
     rental_count: int = Field(default=0, nullable=False)
     reservation_count: int = Field(default=0, nullable=False)
     like_count: int = Field(default=0, nullable=False)
-    similarity_token: Optional[str] = Field(default=None, max_length=1000)
+    similarity_token: str = Field(max_length=1000, nullable=False)
 
-    genre_links: list[BookGenre] = Relationship(back_populates="book")
-    chunks: list["BookChunk"] = Relationship(back_populates="book")
-    similarities: list["BookSimilarity"] = Relationship(back_populates="book")
-    details: list["BookDetail"] = Relationship(back_populates="book")
+    book: Optional[Book] = Relationship(back_populates="book_affiliations")
+    affiliation: Optional[Affiliation] = Relationship(back_populates="book_affiliations")
+    similarity: Optional["BookSimilarity"] = Relationship(back_populates="book_affiliation")
+    details: list["BookDetail"] = Relationship(back_populates="book_affiliation")
 
 
 # ──────────────────────────────────────
@@ -60,14 +86,14 @@ class Book(SQLModel):
 class BookSimilarity(SQLModel):
     __tablename__ = "book_similarity"
 
-    book_id: int = Field(primary_key=True, foreign_key="book.id")
-    vector_similarity: List[float] = Field(
-        sa_column=Column(Vector(1024)),
+    book_affiliationid: int = Field(
+        primary_key=True, foreign_key="book_affiliation.id"
     )
+    vector_similarity: str = Field(nullable=False)  # VECTOR 타입 — pgvector 쓰면 교체
     created_at: datetime = Field(default_factory=datetime.now, nullable=False)
     updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
-    book: Optional[Book] = Relationship(back_populates="similarities")
+    book_affiliation: Optional[BookAffiliation] = Relationship(back_populates="similarity")
 
 
 # ──────────────────────────────────────
@@ -76,12 +102,10 @@ class BookSimilarity(SQLModel):
 class BookChunk(SQLModel):
     __tablename__ = "book_chunk"
 
-    book_id: int = Field(primary_key=True, foreign_key="book.id")
+    id: Optional[int] = Field(default=None, primary_key=True)
     chunk: str = Field(max_length=1000, nullable=False)
     created_at: datetime = Field(default_factory=datetime.now, nullable=False)
     updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
-
-    book: Optional[Book] = Relationship(back_populates="chunks")
 
 
 # ──────────────────────────────────────
@@ -91,13 +115,14 @@ class BookDetail(SQLModel):
     __tablename__ = "book_detail"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    member_id: int = Field(foreign_key="member.id", nullable=False, index=True)
-    book_id: int = Field(foreign_key="book.id", nullable=False, index=True)
-    affiliation_id: int = Field(nullable=False, index=True)
+    member_id: int = Field(nullable=False, index=True)
+    book_affiliation_id: int = Field(
+        foreign_key="book_affiliation.id", nullable=False, index=True
+    )
     rental_request_status: bool = Field(nullable=False)
     rental_status: bool = Field(nullable=False)
     return_date: date = Field(nullable=False)
     registration_number: str = Field(max_length=100, nullable=False)
     call_number: str = Field(max_length=45, nullable=False)
 
-    book: Optional[Book] = Relationship(back_populates="details")
+    book_affiliation: Optional[BookAffiliation] = Relationship(back_populates="details")

@@ -1,4 +1,4 @@
-from app.v1.common.models.books import BookSimilarity, Book
+from app.v1.common.models.book_tables import BookSimilarity, BookAffiliation, Book
 from sqlmodel import select, Session, cast, Float, func
 
 
@@ -8,10 +8,12 @@ def embedding_sim(session: Session, ask_em: list[float], limit: int):
     book_data = (
         select(
             Book.title.label("titles"),
-            Book.id.label("book_ids"),
+            BookAffiliation.id.label("book_ids"),
             distance_expr.label("distances")
         )
-        .join(BookSimilarity, BookSimilarity.book_id == Book.id)
+        .select_from(BookAffiliation)
+        .join(BookSimilarity, BookSimilarity.book_affiliationid == BookAffiliation.id)
+        .join(Book, Book.id == BookAffiliation.book_id)
         .subquery()
     )
 
