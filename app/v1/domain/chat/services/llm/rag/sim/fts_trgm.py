@@ -1,5 +1,5 @@
 from sqlmodel import Session, select, case, Float, cast, func, desc, or_
-from app.v1.common.models.book_tables import BookAffiliation
+from app.v1.common.models.book_tables import BookAffiliation, Book
 
 
 class Search:
@@ -18,11 +18,11 @@ class Search:
 
     @staticmethod
     def trgm_search(keywords: str):
-        title_ns = func.replace(BookAffiliation.book.title, " ", "")
+        title_ns = func.replace(Book.title, " ", "")
         q_ns = func.replace(keywords, " ", "")
 
         trgm_raw = func.greatest(
-            func.similarity(BookAffiliation.book.title, keywords),
+            func.similarity(Book.title, keywords),
             func.similarity(title_ns, q_ns),
         )
         trgm_score = cast(trgm_raw, Float).label("trgm_score")
@@ -41,11 +41,13 @@ class Search:
 
         stmt = (
             select(BookAffiliation, score)
+            .select_from(BookAffiliation)
+            .join(Book, Book.id == BookAffiliation.book_id)
             .where(
                 or_(
                     BookAffiliation.search_tsv.op("@@")(tsq),
                     trgm_score >= 0,
-                    BookAffiliation.book.title.ilike(f"%{q}%")
+                    Book.title.ilike(f"%{q}%")
                 )
             )
             .order_by(desc(score))
