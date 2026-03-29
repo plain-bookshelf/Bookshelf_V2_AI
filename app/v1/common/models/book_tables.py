@@ -1,7 +1,6 @@
 from datetime import date, datetime
 from typing import Optional
 from sqlmodel import Field, Relationship, SQLModel, Column
-from pgvector.sqlalchemy import Vector
 from sqlalchemy.dialects.postgresql import TSVECTOR
 
 
@@ -72,7 +71,11 @@ class BookAffiliation(SQLModel):
     rental_count: int = Field(default=0, nullable=False)
     reservation_count: int = Field(default=0, nullable=False)
     like_count: int = Field(default=0, nullable=False)
-    similarity_token: str = Field(max_length=1000, nullable=False)
+    # similarity_token: str = Field(max_length=1000, nullable=False)
+    similarity_token: Optional[str] = Field(
+        default=None,
+        sa_column=Column(TSVECTOR),
+    )
 
     book: Optional[Book] = Relationship(back_populates="book_affiliations")
     affiliation: Optional[Affiliation] = Relationship(back_populates="book_affiliations")
