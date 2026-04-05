@@ -8,6 +8,7 @@ from app.v1.domain.chat.services.llm.rag.ranking.rerank import get_reranked_chun
 from app.v1.domain.chat.services.llm.rag.metadata.keywords import keyword_maker
 from app.v1.domain.chat.services.llm.rag.metadata.q_embedding import query_embedding
 from app.v1.domain.chat.services.llm.rag.metadata.set_prompt import book_prompt
+from app.v1.domain.chat.services.llm.rag.sim.query_sim_model import sim_model
 
 genai.configure(api_key=settings.BIG_API_KEY)
 
@@ -49,7 +50,11 @@ class BookshelfLLMService:
 
 
     def bookshelf_model(self, session: Session, con_id, user_q: str, limit: int, top_k: int):
-        chunks = self._build_bookshelf_context(session, user_q, limit, top_k)
+        if_rag = sim_model(session, user_q, con_id)
+        if if_rag:
+            chunks = self._build_bookshelf_context(session, user_q, limit, top_k)
+        else:
+            chunks = '이전 정보들을 참고하세요'
         prompt = book_prompt(session, user_q, chunks, con_id)
         model = genai.GenerativeModel(
             self.model_name,
