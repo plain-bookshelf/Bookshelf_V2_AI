@@ -61,9 +61,10 @@ class BookshelfLLMService:
             system_instruction=prompt,
         )
         response = model.generate_content(user_q)
+        total_token = response.usage_metadata.total_token_count
         try:
             result = self._parse_llm_json(response.text)
-            return result
+            return result, total_token
         except json.JSONDecodeError:
             raise LLMServiceException()
 

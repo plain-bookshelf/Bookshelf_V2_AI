@@ -9,19 +9,20 @@ def process_chat(session: Session, chat: Chat) -> (dict, int):
     member = get_member(session, chat.member_id)
     chat_session = get_session(session, chat.session_id, member.id)
 
-    answer = bookshelf_llm_service.bookshelf_model(
+    answer, token = bookshelf_llm_service.bookshelf_model(
         session, chat.member_id, chat.question, 15, 6
     )
 
-    message_id = _save_messages(session, chat, answer)
+    message_id = _save_messages(session, chat, answer, token)
     return answer, message_id
 
 
-def _save_messages(session: Session, chat: Chat, answer: dict):
+def _save_messages(session: Session, chat: Chat, answer: dict, token: int):
     session.add(ChatAiMessage(
         session_id=chat.session_id,
         role=MessageRole.USER,
         content=chat.question,
+        token_usage=token,
     ))
 
     assistant_msg = ChatAiMessage(
