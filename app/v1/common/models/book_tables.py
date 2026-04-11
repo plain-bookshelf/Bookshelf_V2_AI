@@ -8,7 +8,7 @@ from pgvector.sqlalchemy import Vector
 # ──────────────────────────────────────
 # 소속 (affiliation)
 # ──────────────────────────────────────
-class Affiliation(SQLModel):
+class Affiliation(SQLModel, table=True):
     __tablename__ = "affiliation"
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -20,7 +20,7 @@ class Affiliation(SQLModel):
 # ──────────────────────────────────────
 # 장르 (genre)
 # ──────────────────────────────────────
-class Genre(SQLModel):
+class Genre(SQLModel, table=True):
     __tablename__ = "genre"
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -32,7 +32,7 @@ class Genre(SQLModel):
 # ──────────────────────────────────────
 # 책 장르 (book_genre) — 다대다 중간 테이블
 # ──────────────────────────────────────
-class BookGenre(SQLModel):
+class BookGenre(SQLModel, table=True):
     __tablename__ = "book_genre"
 
     book_id: int = Field(foreign_key="book.id", primary_key=True)
@@ -45,7 +45,7 @@ class BookGenre(SQLModel):
 # ──────────────────────────────────────
 # 책 (book)
 # ──────────────────────────────────────
-class Book(SQLModel):
+class Book(SQLModel, table=True):
     __tablename__ = "book"
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -63,7 +63,7 @@ class Book(SQLModel):
 # ──────────────────────────────────────
 # 책 소속 (book_affiliation)
 # ──────────────────────────────────────
-class BookAffiliation(SQLModel):
+class BookAffiliation(SQLModel, table=True):
     __tablename__ = "book_affiliation"
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -87,7 +87,7 @@ class BookAffiliation(SQLModel):
 # ──────────────────────────────────────
 # 책 유사도 (book_similarity)
 # ──────────────────────────────────────
-class BookSimilarity(SQLModel):
+class BookSimilarity(SQLModel, table=True):
     __tablename__ = "book_similarity"
 
     book_affiliationid: int = Field(
@@ -105,10 +105,10 @@ class BookSimilarity(SQLModel):
 # ──────────────────────────────────────
 # 책 청크 (book_chunk)
 # ──────────────────────────────────────
-class BookChunk(SQLModel):
+class BookChunk(SQLModel, table=True):
     __tablename__ = "book_chunk"
 
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: Optional[int] = Field(default=None, primary_key=True, foreign_key="book_affiliation.id")
     chunk: str = Field(max_length=1000, nullable=False)
     created_at: datetime = Field(default_factory=datetime.now, nullable=False)
     updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
@@ -117,7 +117,7 @@ class BookChunk(SQLModel):
 # ──────────────────────────────────────
 # 책 상세정보 (book_detail)
 # ──────────────────────────────────────
-class BookDetail(SQLModel):
+class BookDetail(SQLModel, table=True):
     __tablename__ = "book_detail"
 
     id: Optional[int] = Field(default=None, primary_key=True)

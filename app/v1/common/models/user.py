@@ -15,7 +15,7 @@ class MemberRole(str, Enum):
 # ──────────────────────────────────────
 # 유저 (member)
 # ──────────────────────────────────────
-class Member(SQLModel):
+class Member(SQLModel, table=True):
     __tablename__ = "member"
 
     id: Optional[int] = Field(default=None, primary_key=True)
