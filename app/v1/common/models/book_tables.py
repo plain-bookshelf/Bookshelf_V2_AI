@@ -1,7 +1,8 @@
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, List
 from sqlmodel import Field, Relationship, SQLModel, Column
 from sqlalchemy.dialects.postgresql import TSVECTOR
+from pgvector.sqlalchemy import Vector
 
 
 # ──────────────────────────────────────
@@ -92,7 +93,9 @@ class BookSimilarity(SQLModel):
     book_affiliationid: int = Field(
         primary_key=True, foreign_key="book_affiliation.id"
     )
-    vector_similarity: str = Field(nullable=False)  # VECTOR 타입 — pgvector 쓰면 교체
+    vector_similarity: List[float] = Field(
+        sa_column=Column(Vector(1024)),
+    )
     created_at: datetime = Field(default_factory=datetime.now, nullable=False)
     updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
 

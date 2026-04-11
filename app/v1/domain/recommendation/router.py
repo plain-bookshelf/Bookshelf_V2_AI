@@ -6,7 +6,7 @@ from app.v1.domain.recommendation.services.book_recommendation import recommend_
 recommend_router = APIRouter()
 
 
-@recommend_router.post("/recommend_books")
+@recommend_router.get("/recommend_books")
 async def recommend_books(session: SessionDep, member_id: int, limit: int = 10):
     result = recommend_by_similarity(session, member_id, limit)
     if not result:
