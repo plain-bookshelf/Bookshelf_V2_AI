@@ -36,7 +36,7 @@ class Ranking:
 
 
         fts_results = self.search.fts_trgm_search(session, keywords, limit=limit)
-        fts_rank = {row.id: i + 1 for i, row in enumerate(fts_results)}
+        fts_rank = {row[0].id: i + 1 for i, row in enumerate(fts_results)}
 
 
         all_ids = set(vec_rank) | set(fts_rank)

@@ -9,7 +9,7 @@ from app.v1.domain.chat.schemas import ImgIds
 img_router = APIRouter()
 
 
-@img_router.get("/get_imgs")
+@img_router.post("/get_and_add_imgs")
 async def send_imgs(session: SessionDep, img_ids: ImgIds):
     stmt = select(Book).where(Book.id.in_(img_ids.ids))
     result = session.exec(stmt).all()

@@ -10,7 +10,7 @@ def process_chat(session: Session, chat: Chat) -> (dict, int):
     chat_session = get_session(session, chat.session_id, member.id)
 
     answer, token = bookshelf_llm_service.bookshelf_model(
-        session, chat.member_id, chat.question, 15, 6
+        session, chat.session_id, chat.question, 15, 6
     )
 
     message_id = _save_messages(session, chat, answer, token)
@@ -29,6 +29,7 @@ def _save_messages(session: Session, chat: Chat, answer: dict, token: int):
         session_id=chat.session_id,
         role=MessageRole.ASSISTANT,
         content=answer.get("answer", "오류가 발생했습니다."),
+        token_usage=token,
     )
     session.add(assistant_msg)
     session.flush()

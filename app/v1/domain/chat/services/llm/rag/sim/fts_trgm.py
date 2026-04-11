@@ -45,7 +45,7 @@ class Search:
             .join(Book, Book.id == BookAffiliation.book_id)
             .where(
                 or_(
-                    BookAffiliation.search_tsv.op("@@")(tsq),
+                    BookAffiliation.similarity_token.op("@@")(tsq),
                     trgm_score >= 0,
                     Book.title.ilike(f"%{q}%")
                 )
