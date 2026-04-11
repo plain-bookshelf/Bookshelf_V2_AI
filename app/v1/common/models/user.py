@@ -8,8 +8,8 @@ from sqlmodel import Field, Relationship, SQLModel
 # ENUM
 # ──────────────────────────────────────
 class MemberRole(str, Enum):
-    USER = "USER"
-    ADMIN = "ADMIN"
+    ROLE_USER = "ROLE_USER"
+    ADMIN = "admin"
 
 
 # ──────────────────────────────────────

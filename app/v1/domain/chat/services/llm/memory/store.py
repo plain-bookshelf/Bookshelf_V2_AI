@@ -6,7 +6,7 @@ def get_messages(session: Session, session_id):
     recent_chat = ""
     stmt = (select(ChatAiMessage)
             .where(ChatAiMessage.session_id == session_id)
-            .order_by(ChatAiMessage.create_at))
+            .order_by(ChatAiMessage.created_at))
     result = session.exec(stmt).all()
     if result:
         for message in result[-12:]:

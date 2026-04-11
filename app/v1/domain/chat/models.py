@@ -1,12 +1,12 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship, SQLModel, Column, String
 from app.v1.common.models.user import Member
 
 
 class MessageRole(str, Enum):
-    USER = "USER"
+    USER = "ROLE_USER"
     ASSISTANT = "ASSISTANT"
 
 
@@ -36,8 +36,9 @@ class ChatAiMessage(SQLModel, table=True):
     session_id: int = Field(foreign_key="chat_ai_session.id", nullable=False, index=True)
     content: str = Field(max_length=10000, nullable=False)
     token_usage: int = Field(nullable=False)
-    role: MessageRole = Field(nullable=False)
-    create_at: datetime = Field(default_factory=datetime.now, nullable=False)
+    # role: MessageRole = Field(nullable=False)
+    role: str = Field(nullable=False)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
     session: Optional[ChatAiSession] = Relationship(back_populates="messages")
     images: list["ChatAiImage"] = Relationship(back_populates="message")

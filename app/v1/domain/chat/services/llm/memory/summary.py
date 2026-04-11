@@ -13,7 +13,7 @@ def memory_summary(session: Session, session_id: int):
     summerize = ""
     stmt = (select(ChatAiMessage)
             .where(ChatAiMessage.session_id == session_id)
-            .order_by(ChatAiMessage.create_at))
+            .order_by(ChatAiMessage.created_at))
     result = session.exec(stmt).all()
     if len(result) > 12:
         for message in result[:-12]: # 12
