@@ -5,9 +5,7 @@ from sqlalchemy.dialects.postgresql import TSVECTOR
 from pgvector.sqlalchemy import Vector
 
 
-# ──────────────────────────────────────
-# 소속 (affiliation)
-# ──────────────────────────────────────
+
 class Affiliation(SQLModel, table=True):
     __tablename__ = "affiliation"
 
@@ -17,9 +15,7 @@ class Affiliation(SQLModel, table=True):
     book_affiliations: list["BookAffiliation"] = Relationship(back_populates="affiliation")
 
 
-# ──────────────────────────────────────
-# 장르 (genre)
-# ──────────────────────────────────────
+
 class Genre(SQLModel, table=True):
     __tablename__ = "genre"
 
@@ -29,9 +25,7 @@ class Genre(SQLModel, table=True):
     book_links: list["BookGenre"] = Relationship(back_populates="genre")
 
 
-# ──────────────────────────────────────
-# 책 장르 (book_genre) — 다대다 중간 테이블
-# ──────────────────────────────────────
+
 class BookGenre(SQLModel, table=True):
     __tablename__ = "book_genre"
 
@@ -42,9 +36,7 @@ class BookGenre(SQLModel, table=True):
     genre: Optional[Genre] = Relationship(back_populates="book_links")
 
 
-# ──────────────────────────────────────
-# 책 (book)
-# ──────────────────────────────────────
+
 class Book(SQLModel, table=True):
     __tablename__ = "book"
 
@@ -60,9 +52,7 @@ class Book(SQLModel, table=True):
     book_affiliations: list["BookAffiliation"] = Relationship(back_populates="book")
 
 
-# ──────────────────────────────────────
-# 책 소속 (book_affiliation)
-# ──────────────────────────────────────
+
 class BookAffiliation(SQLModel, table=True):
     __tablename__ = "book_affiliation"
 
@@ -72,7 +62,6 @@ class BookAffiliation(SQLModel, table=True):
     rental_count: int = Field(default=0, nullable=False)
     reservation_count: int = Field(default=0, nullable=False)
     like_count: int = Field(default=0, nullable=False)
-    # similarity_token: str = Field(max_length=1000, nullable=False)
     similarity_token: Optional[str] = Field(
         default=None,
         sa_column=Column(TSVECTOR),
@@ -84,9 +73,7 @@ class BookAffiliation(SQLModel, table=True):
     details: list["BookDetail"] = Relationship(back_populates="book_affiliation")
 
 
-# ──────────────────────────────────────
-# 책 유사도 (book_similarity)
-# ──────────────────────────────────────
+
 class BookSimilarity(SQLModel, table=True):
     __tablename__ = "book_similarity"
 
@@ -102,9 +89,7 @@ class BookSimilarity(SQLModel, table=True):
     book_affiliation: Optional[BookAffiliation] = Relationship(back_populates="similarity")
 
 
-# ──────────────────────────────────────
-# 책 청크 (book_chunk)
-# ──────────────────────────────────────
+
 class BookChunk(SQLModel, table=True):
     __tablename__ = "book_chunk"
 
@@ -114,9 +99,7 @@ class BookChunk(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
 
-# ──────────────────────────────────────
-# 책 상세정보 (book_detail)
-# ──────────────────────────────────────
+
 class BookDetail(SQLModel, table=True):
     __tablename__ = "book_detail"
 

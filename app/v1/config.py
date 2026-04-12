@@ -2,7 +2,8 @@ import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-root_dir = os.path.dirname(current_dir)
+app_dir = os.path.dirname(current_dir)
+root_dir = os.path.dirname(app_dir) # 한 번 더 올라감
 env_path = os.path.join(root_dir, ".env")
 
 class Settings(BaseSettings):
@@ -21,7 +22,7 @@ class Settings(BaseSettings):
     DB_NAME : str
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=env_path,
         env_file_encoding="utf-8"
     )
 

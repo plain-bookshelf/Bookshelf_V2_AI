@@ -57,12 +57,3 @@ class Search:
 
 
 search_class = Search()
-
-
-# from db.session import engine
-# with Session(engine) as session:
-#     rows = fts_trgm_search(session, "동물", limit=50)
-#     i = 0
-#     for book, scores in rows:
-#         i += 1
-#         print(i, book.id, scores, book.titles, book.authors)

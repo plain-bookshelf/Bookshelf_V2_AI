@@ -44,17 +44,3 @@ def get_reranked_chunk(session: Session, ask_str: str, ask_em: list[float], keyw
                 """
 
     return books_to_give
-
-# from db.session import engine
-# with Session(engine) as session:
-#     text = "c언어 관련 책 추천해줘"
-#     metadata = "c언어"
-#     # text = "1984랑 비슷한 책 추천해줘"
-#     # metadata = "디스토피아"
-#     from FlagEmbedding import BGEM3FlagModel
-#     m3 = BGEM3FlagModel("BAAI/bge-m3")
-#     out = m3.encode(text, batch_size=12, max_length=4096)
-#     dense = out['dense_vecs']
-#
-#     a = get_reranked_chunk(session, text, dense, metadata, 15, 6)
-#     print(a)

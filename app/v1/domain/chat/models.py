@@ -10,9 +10,7 @@ class MessageRole(str, Enum):
     ASSISTANT = "ASSISTANT"
 
 
-# ──────────────────────────────────────
-# 챗봇 세션 (chat_ai_session)
-# ──────────────────────────────────────
+
 class ChatAiSession(SQLModel, table=True):
     __tablename__ = "chat_ai_session"
 
@@ -26,9 +24,7 @@ class ChatAiSession(SQLModel, table=True):
     messages: list["ChatAiMessage"] = Relationship(back_populates="session")
 
 
-# ──────────────────────────────────────
-# 챗봇 메시지 (chat_ai_message)
-# ──────────────────────────────────────
+
 class ChatAiMessage(SQLModel, table=True):
     __tablename__ = "chat_ai_message"
 
@@ -36,7 +32,6 @@ class ChatAiMessage(SQLModel, table=True):
     session_id: int = Field(foreign_key="chat_ai_session.id", nullable=False, index=True)
     content: str = Field(max_length=10000, nullable=False)
     token_usage: int = Field(nullable=False)
-    # role: MessageRole = Field(nullable=False)
     role: str = Field(nullable=False)
     created_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
@@ -44,9 +39,7 @@ class ChatAiMessage(SQLModel, table=True):
     images: list["ChatAiImage"] = Relationship(back_populates="message")
 
 
-# ──────────────────────────────────────
-# 챗봇 이미지 (chat_ai_image)
-# ──────────────────────────────────────
+
 class ChatAiImage(SQLModel, table=True):
     __tablename__ = "chat_ai_image"
 

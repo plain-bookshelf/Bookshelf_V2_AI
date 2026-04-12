@@ -42,17 +42,3 @@ def embedding_sim(session: Session, ask_em: list[float], limit: int):
     )
 
     return session.exec(result).all()
-
-
-# from db.session import engine
-# from FlagEmbedding import BGEM3FlagModel
-# text = """c언어"""
-# m3 = BGEM3FlagModel("BAAI/bge-m3")
-# out = m3.encode(text, batch_size=12, max_length=4096)
-# dense = out['dense_vecs']
-#
-# with Session(engine) as session:
-#     rows = embedding_sim(session, dense, limit=15)
-#     print(rows)
-#     for t, n, d in rows:
-#         print(n,d,t)

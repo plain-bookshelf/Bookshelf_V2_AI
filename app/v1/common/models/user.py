@@ -4,17 +4,11 @@ from typing import Optional
 from sqlmodel import Field, Relationship, SQLModel
 
 
-# ──────────────────────────────────────
-# ENUM
-# ──────────────────────────────────────
 class MemberRole(str, Enum):
     ROLE_USER = "ROLE_USER"
     ADMIN = "admin"
 
 
-# ──────────────────────────────────────
-# 유저 (member)
-# ──────────────────────────────────────
 class Member(SQLModel, table=True):
     __tablename__ = "member"
 
