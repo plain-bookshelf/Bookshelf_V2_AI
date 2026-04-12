@@ -5,13 +5,14 @@ from app.v1.common.models.book_tables import (
     BookDetail,
     BookSimilarity,
 )
+from app.v1.common.models.book_tables import rental
 
 
 def get_user_book_ids(session: Session, member_id: int) -> list[int]:
     statement = (
         select(BookDetail.book_affiliation_id)
         .where(BookDetail.member_id == member_id)
-        .where(BookDetail.rental_status == True)
+        .where(BookDetail.rental_status == rental.ran)
     )
     result = session.exec(statement).all()
     return list(result) if result else []
