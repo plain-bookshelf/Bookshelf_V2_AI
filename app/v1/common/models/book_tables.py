@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from typing import Optional, List
+from enum import Enum
 from sqlmodel import Field, Relationship, SQLModel, Column
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from pgvector.sqlalchemy import Vector
@@ -100,6 +101,11 @@ class BookChunk(SQLModel, table=True):
 
 
 
+class rental(str, Enum):
+    re = "RETURN"
+    ran = "RENTAL"
+    ran_re = "RENTAL_REQUEST"
+
 class BookDetail(SQLModel, table=True):
     __tablename__ = "book_detail"
 
@@ -109,7 +115,7 @@ class BookDetail(SQLModel, table=True):
         foreign_key="book_affiliation.id", nullable=False, index=True
     )
     rental_request_status: bool = Field(nullable=False)
-    rental_status: bool = Field(nullable=False)
+    rental_status: rental = Field(nullable=False)
     return_date: date = Field(nullable=False)
     registration_number: str = Field(max_length=100, nullable=False)
     call_number: str = Field(max_length=45, nullable=False)
