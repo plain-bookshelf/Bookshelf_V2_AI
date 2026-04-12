@@ -1,8 +1,8 @@
 from app.v1.common.error.base_exception import BaseAppException
 
 class MemberNotFoundException(BaseAppException):
-    def __init__(self, member_id: int):
-        super().__init__(404, f"회원을 찾을 수 없습니다: {member_id}")
+    def __init__(self, username: str):
+        super().__init__(404, f"회원을 찾을 수 없습니다: {username}")
 
 
 class SessionNotFoundException(BaseAppException):

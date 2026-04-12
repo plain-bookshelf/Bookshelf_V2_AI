@@ -6,7 +6,7 @@ from app.v1.domain.chat.services.llm.generator import bookshelf_llm_service
 
 
 def process_chat(session: Session, chat: Chat) -> (dict, int):
-    member = get_member(session, chat.member_id)
+    member = get_member(session, chat.username)
     chat_session = get_session(session, chat.session_id, member.id)
 
     answer, token = bookshelf_llm_service.bookshelf_model(

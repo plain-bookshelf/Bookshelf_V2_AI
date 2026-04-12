@@ -8,14 +8,14 @@ from app.v1.common.models.user import Member
 recommend_router = APIRouter()
 
 
-@recommend_router.get("/recommend_books/{member_id}")
-async def recommend_books(session: SessionDep, member_id: int, limit: int = 20):
-    stmt = select(Member).where(Member.id == member_id)
+@recommend_router.get("/recommend_books/{username}")
+async def recommend_books(session: SessionDep, username: str, limit: int = 20):
+    stmt = select(Member).where(Member.username == username)
     member = session.exec(stmt).first()
     if not member:
-        raise MemberNotFoundException(member_id=member_id)
+        raise MemberNotFoundException(username=username)
 
-    result = recommend_by_similarity(session, member_id, limit)
+    result = recommend_by_similarity(session, member.id, limit)
     if not result:
         return {"books": []}
     return {

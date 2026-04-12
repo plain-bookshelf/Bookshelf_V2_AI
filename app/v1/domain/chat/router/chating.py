@@ -13,9 +13,9 @@ chat_router = APIRouter()
 
 @chat_router.post("/chat")
 async def chatbot(session: SessionDep, chat: Chat):
-    user = session.exec(select(Member).where(Member.id == chat.member_id)).first()
+    user = session.exec(select(Member).where(Member.username == chat.username)).first()
     if not user:
-        raise MemberNotFoundException(member_id=chat.member_id)
+        raise MemberNotFoundException(username=chat.username)
 
     chat_session = session.exec(select(ChatAiSession).where(ChatAiSession.id == chat.session_id))
     if not chat_session:
@@ -27,11 +27,11 @@ async def chatbot(session: SessionDep, chat: Chat):
 
 
 
-@chat_router.post("/chat/session/{member_id}", response_model=ChatAiSession)
-def create_chat_session(session: SessionDep, member_id: int):
-    user = session.exec(select(Member).where(Member.id == member_id)).first()
+@chat_router.post("/chat/session/{username}", response_model=ChatAiSession)
+def create_chat_session(session: SessionDep, username: str):
+    user = session.exec(select(Member).where(Member.username == username)).first()
     if not user:
-        raise MemberNotFoundException(member_id=member_id)
+        raise MemberNotFoundException(username=username)
 
     random_title = f"새로운 대화_{random.randint(1000, 9999)}"
 

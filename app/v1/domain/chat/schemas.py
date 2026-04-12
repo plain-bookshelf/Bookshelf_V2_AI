@@ -4,7 +4,7 @@ class UserMake(SQLModel):
     username: str
 
 class Chat(SQLModel):
-    member_id: int
+    username: str
     session_id: int
     question: str
 

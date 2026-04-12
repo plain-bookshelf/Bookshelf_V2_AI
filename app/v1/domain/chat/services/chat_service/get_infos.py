@@ -3,10 +3,10 @@ from app.v1.common.error.exception import MemberNotFoundException, SessionNotFou
 from app.v1.domain.chat.models import ChatAiSession, Member
 
 
-def get_member(session: Session, member_id: int) -> Member:
-    member = session.get(Member, member_id)
+def get_member(session: Session, username: str) -> Member:
+    member = session.exec(select(Member).where(Member.username == username)).first()
     if not member:
-        raise MemberNotFoundException(member_id)
+        raise MemberNotFoundException(username)
     return member
 
 
