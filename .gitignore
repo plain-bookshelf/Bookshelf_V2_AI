@@ -5,3 +5,5 @@ __pycache__/
 *.pyc
 app/v1/jops/
 docker_BookMaru-2026_04_11_21_37_52-dump.sql
+trust-policy.json
+task-definition.json
