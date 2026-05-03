@@ -1,24 +1,21 @@
-from sqlmodel import SQLModel
+from pydantic import BaseModel
 
-class UserMake(SQLModel):
-    username: str
 
-class Chat(SQLModel):
+class Chat(BaseModel):
     username: str
     session_id: int
     question: str
 
-class Con(SQLModel):
-    user_id: int
 
-class Messages(SQLModel):
-    con_id: int
-    role: str
-    content: str
+class ChatAnswer(BaseModel):
+    agent: dict
+    message_id: int
 
-class UserId(SQLModel):
-    id: int
 
-class ImgIds(SQLModel):
+class ImgIds(BaseModel):
     message_id: int
     ids: list[int]
+
+
+class BookImgs(BaseModel):
+    book_imgs: list[str]

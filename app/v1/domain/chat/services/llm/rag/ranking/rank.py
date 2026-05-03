@@ -1,7 +1,7 @@
-from sqlmodel import Session, cast, Float, select, asc, desc, func, or_
+from sqlmodel import Session,select
 from app.v1.domain.chat.services.llm.rag.sim.vector import embedding_sim
 from app.v1.domain.chat.services.llm.rag.sim.fts_trgm import search_class
-from app.v1.common.models.book_tables import BookChunk, BookSimilarity, BookAffiliation
+from app.v1.common.models.book_tables import BookChunk
 
 
 class Ranking:

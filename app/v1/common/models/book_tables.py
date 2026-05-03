@@ -110,14 +110,27 @@ class BookDetail(SQLModel, table=True):
     __tablename__ = "book_detail"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    member_id: int = Field(nullable=False, index=True)
+    member_id: Optional[int] = Field(default=None, index=True)
     book_affiliation_id: int = Field(
         foreign_key="book_affiliation.id", nullable=False, index=True
     )
-    # rental_status: rental = Field(nullable=False)
     rental_status: rental = Field(sa_column=Column(String, nullable=False))
     return_date: date = Field(nullable=False)
     registration_number: str = Field(max_length=100, nullable=False)
     call_number: str = Field(max_length=45, nullable=False)
 
     book_affiliation: Optional[BookAffiliation] = Relationship(back_populates="details")
+
+
+
+class BookRentalRecord(SQLModel, table=True):
+    __tablename__ = "book_rental_record"
+
+    member_id: int = Field(primary_key=True, foreign_key="member.id")
+    book_detail_id: int = Field(primary_key=True, foreign_key="book_detail.id")
+
+    rental_date: datetime = Field(default_factory=datetime.now, nullable=False)
+    return_date: date = Field(nullable=False)
+
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+    updated_at: datetime = Field(default_factory=datetime.now, nullable=False)

@@ -1,10 +1,11 @@
-from app.v1.common.models.book_tables import BookAffiliation, BookGenre, Book
-from app.v1.domain.chat.services.llm.rag.ranking.rank_model import rerank_service
 from sqlmodel import Session, select
 from sqlalchemy.orm import joinedload, selectinload
+from app.v1.common.models.book_tables import BookAffiliation, BookGenre, Book
+from app.v1.domain.chat.services.llm.rag.ranking.rank_model import rerank_service
+from app.v1.domain.chat.services.llm.memory.bookdata import update_session_book_meta
 
 
-def get_reranked_chunk(session: Session, ask_str: str, ask_em: list[float], keywords: str, limit: int, top_k: int):
+def get_reranked_chunk(session: Session, ask_str: str, ask_em: list[float], keywords: str, limit: int, top_k: int, con_id):
     top_k_ids = rerank_service.ranking_model_answer(session, ask_str, ask_em, keywords, limit, top_k)
 
     stmt = (
@@ -19,6 +20,8 @@ def get_reranked_chunk(session: Session, ask_str: str, ask_em: list[float], keyw
         )
     )
     results = session.exec(stmt).unique().all()
+
+    update_session_book_meta(session, con_id, results)
 
     ba_map = {r.id: r for r in results}
 
@@ -42,5 +45,5 @@ def get_reranked_chunk(session: Session, ask_str: str, ask_em: list[float], keyw
                 [청구기호] {call_numbers}
                 [출판일] {ba.book.publication_date}
                 """
-
+    print("\n검증: ",books_to_give)
     return books_to_give

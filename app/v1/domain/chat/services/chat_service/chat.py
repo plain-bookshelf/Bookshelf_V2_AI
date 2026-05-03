@@ -1,6 +1,7 @@
+import random
 from sqlmodel import Session
 from app.v1.domain.chat.schemas import Chat
-from app.v1.domain.chat.models import ChatAiMessage, MessageRole
+from app.v1.domain.chat.models import ChatAiMessage, ChatAiSession, MessageRole
 from app.v1.domain.chat.services.chat_service.get_infos import get_member, get_session
 from app.v1.domain.chat.services.llm.generator import bookshelf_llm_service
 
@@ -36,3 +37,18 @@ def _save_messages(session: Session, chat: Chat, answer: dict, token: int):
     session.commit()
 
     return assistant_msg.id
+
+
+def make_chat_session(session: Session, username: str):
+    user = get_member(session, username)
+    random_title = f"새로운 대화_{random.randint(1000, 9999)}"
+
+    new_session = ChatAiSession(
+        member_id=user.id,
+        title=random_title
+    )
+
+    session.add(new_session)
+    session.commit()
+    session.refresh(new_session)
+    return new_session

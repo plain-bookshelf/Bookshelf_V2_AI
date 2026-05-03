@@ -1,7 +1,8 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import Optional, List, Dict, Any
 from sqlmodel import Field, Relationship, SQLModel, Column, String
+from sqlalchemy.dialects.postgresql import JSONB
 from app.v1.common.models.user import Member
 
 
@@ -17,6 +18,10 @@ class ChatAiSession(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     member_id: int = Field(foreign_key="member.id", nullable=False, index=True)
     title: str = Field(max_length=20, nullable=False)
+    active_book_meta: List[Dict[str, Any]] = Field(
+        default=[],
+        sa_column=Column(JSONB, server_default='[]', nullable=False)
+    )
     created_at: datetime = Field(default_factory=datetime.now, nullable=False)
     updated_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
