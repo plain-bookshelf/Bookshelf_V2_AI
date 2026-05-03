@@ -59,7 +59,7 @@ class BookshelfLLMService:
 
 
     def bookshelf_model(self, session: Session, con_id, user_q: str, limit: int, top_k: int)-> (dict, int):
-        if_rag = query_router.sim_response(session, user_q, con_id)
+        if_rag = query_router.sim_response(user_q, prompts.sim_query_prompt(session, con_id))
         if if_rag:
             chunks = self._build_bookshelf_context(session, user_q, limit, top_k, con_id)
         else:

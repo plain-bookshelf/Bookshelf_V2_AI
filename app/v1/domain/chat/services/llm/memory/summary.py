@@ -1,7 +1,6 @@
 from sqlmodel import select, Session
 from app.v1.config import settings
 from app.v1.domain.chat.models import ChatAiMessage
-from app.v1.domain.chat.services.llm.rag.metadata.set_prompt import prompts
 from app.v1.domain.chat.services.llm.rag.metadata.query_models import query_router
 
 
@@ -17,7 +16,7 @@ def memory_summary(session: Session, session_id: int):
             content = message.content
             summerize += f"{role}: {content}\n"
 
-        prompt = prompts.summary_prompt()
+        prompt = "너는 대화 내용 압축기다. 주어진 대화 내용을 보고 중요 내용을 간단히 요약해라."
         answer = query_router.get_response(summerize, prompt, settings.MODEL_3)
 
         return answer

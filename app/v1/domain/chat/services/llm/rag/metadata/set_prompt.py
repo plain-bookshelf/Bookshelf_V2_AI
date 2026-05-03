@@ -6,11 +6,6 @@ from app.v1.domain.chat.services.llm.memory.summary import memory_summary
 
 class SetPrompt:
 
-    @staticmethod
-    def summary_prompt() -> str:
-        instructions = "너는 대화 내용 압축기다. 주어진 대화 내용을 보고 중요 내용을 간단히 요약해라."
-        return instructions
-
 
     @staticmethod
     def sim_query_prompt(session: Session, con_id) -> str:
