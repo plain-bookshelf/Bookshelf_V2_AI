@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from app.v1.common.dependencies import SessionDep
-from app.v1.domain.chat.schemas import Chat, ChatAnswer
-from app.v1.domain.chat.models import ChatAiSession
+from app.v1.domain.chat.schemas import Chat, ChatAnswer, ChatSession
 from app.v1.domain.chat.services.chat_service.chat import process_chat, make_chat_session
 from app.v1.domain.chat.services.chat_service.get_infos import get_session, get_member
 
@@ -17,7 +16,7 @@ async def chatbot(session: SessionDep, chat: Chat):
 
 
 
-@chat_router.post("/chat/session/{username}", response_model=ChatAiSession)
+@chat_router.post("/chat/session/{username}", response_model=ChatSession)
 def create_chat_session(session: SessionDep, username: str):
     new_session = make_chat_session(session, username)
     return new_session

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class Chat(BaseModel):
@@ -10,6 +11,14 @@ class Chat(BaseModel):
 class ChatAnswer(BaseModel):
     agent: dict
     message_id: int
+
+
+class ChatSession(BaseModel):
+    id: int
+    member_id: int
+    title: str
+    created_at: datetime
+    updated_at: datetime
 
 
 class ImgIds(BaseModel):
